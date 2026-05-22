@@ -1,0 +1,134 @@
+@HostAddress = http://localhost:5000
+@BaseUrl = {{HostAddress}}/api/v1
+
+# Variables that you can update after creating resources
+@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjRhY2IzODQwLTkyYmYtNDVlNy1iMGRjLTIwOWQ0YTY3YTQ5NiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFkbWluQHRhc2ttYW5hZ2VyLmxvY2FsIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3Nzk1NTkzNzMsImlzcyI6IlRhc2tNYW5hZ2VyIiwiYXVkIjoiVGFza01hbmFnZXJDbGllbnQifQ._AbaVSwE2ib7HxtInw8qURi_BmmlggU-xBucmwHV-zA
+@ProjectId = 41335225-65dd-4920-8b44-a33bb1ab836f
+@TaskId = 3660d314-bba2-4615-8ddc-004d4b1c823b
+
+
+### ==========================================
+### 1. AUTHENTICATION
+### ==========================================
+
+### 1.1 Register a new User
+POST {{BaseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Test User",
+  "email": "testuser@example.com",
+  "password": "Password123!"
+}
+
+### 1.2 Login as Admin (Seeded User)
+# Use the token returned here to replace @Token at the top!
+POST {{BaseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@taskmanager.local",
+  "password": "Admin123!"
+}
+
+### 1.3 Login as standard User
+POST {{BaseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "Password123!"
+}
+
+
+### ==========================================
+### 2. ADMIN ENDPOINTS
+### ==========================================
+
+### 2.1 Get total users count (Requires Admin Token)
+GET {{BaseUrl}}/admin/users/count
+Authorization: Bearer {{Token}}
+
+
+### ==========================================
+### 3. PROJECTS ENDPOINTS
+### ==========================================
+
+### 3.1 Create a new Project
+# Use the "id" returned here to replace @ProjectId at the top!
+POST {{BaseUrl}}/projects
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "name": "My Awesome Project",
+  "description": "This is a test project created from the .http file"
+}
+
+### 3.2 Get all Projects for current user
+GET {{BaseUrl}}/projects
+Authorization: Bearer {{Token}}
+
+### 3.3 Get a specific Project by ID
+GET {{BaseUrl}}/projects/{{ProjectId}}
+Authorization: Bearer {{Token}}
+
+### 3.4 Update a Project
+PUT {{BaseUrl}}/projects/{{ProjectId}}
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "name": "Updated Awesome Project",
+  "description": "The description has been updated successfully"
+}
+
+### 3.5 Delete a Project
+DELETE {{BaseUrl}}/projects/{{ProjectId}}
+Authorization: Bearer {{Token}}
+
+
+### ==========================================
+### 4. TASKS ENDPOINTS
+### ==========================================
+
+### 4.1 Create a new Task inside a Project
+# Use the "id" returned here to replace @TaskId at the top!
+POST {{BaseUrl}}/projects/{{ProjectId}}/tasks
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "title": "Complete the Backend 2",
+  "description": "Finish writing the .http file and test all APIs 2",
+  "dueDate": "2026-12-31T23:59:59Z",
+  "priority": 1, 
+  "status": 0
+}
+# Priority: 0 (Low), 1 (Medium), 2 (High)
+# Status: 0 (Todo), 1 (InProgress), 2 (Done)
+
+### 4.2 Get all Tasks for a specific Project
+GET {{BaseUrl}}/projects/{{ProjectId}}/tasks
+Authorization: Bearer {{Token}}
+
+### 4.3 Get a specific Task by ID
+GET {{BaseUrl}}/projects/{{ProjectId}}/tasks/{{TaskId}}
+Authorization: Bearer {{Token}}
+
+### 4.4 Update a Task
+PUT {{BaseUrl}}/projects/{{ProjectId}}/tasks/{{TaskId}}
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "title": "Complete the Backend - Updated",
+  "description": "Finish writing the .http file and test all APIs",
+  "dueDate": "2026-12-31T23:59:59Z",
+  "priority": 2,
+  "status": 1 
+}
+
+### 4.5 Delete a Task
+DELETE {{BaseUrl}}/projects/{{ProjectId}}/tasks/{{TaskId}}
+Authorization: Bearer {{Token}}
