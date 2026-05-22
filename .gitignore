@@ -1,0 +1,35 @@
+# Build outputs
+bin/
+obj/
+
+# Visual Studio and Rider
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+
+# Test and coverage output
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# .NET SDK artifacts
+project.lock.json
+artifacts/
+
+# Local environment files
+.env
+.env.*
+appsettings.Local.json
+appsettings.Development.local.json
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
