@@ -31,7 +31,5 @@ public class TaskItemConfiguration : IEntityTypeConfiguration<TaskItem>
             .WithMany(p => p.Tasks)
             .HasForeignKey(t => t.ProjectId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasQueryFilter(t => !t.IsDeleted);
     }
 }

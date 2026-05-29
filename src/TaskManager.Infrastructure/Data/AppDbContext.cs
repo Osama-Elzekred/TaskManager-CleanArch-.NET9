@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TaskManager.Domain.Entities;
-using TaskManager.Infrastructure.Data.Configurations;
+using TaskManager.Infrastructure.Data.Extensions;
 
 namespace TaskManager.Infrastructure.Data;
 
@@ -18,5 +18,8 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+        // Apply soft-delete filters + IsDeleted indexes to all ISoftDeletable entities
+        modelBuilder.ConfigureGlobalSoftDeletes();
     }
 }

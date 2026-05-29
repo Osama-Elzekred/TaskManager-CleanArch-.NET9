@@ -18,13 +18,18 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-        services.AddDbContextPool<AppDbContext>((_, options) =>
+        // Register the soft delete interceptor as a singleton (stateless, thread-safe)
+        services.AddSingleton<AuditableInterceptor>();
+
+        services.AddDbContextPool<AppDbContext>((sp, options) =>
+        {
             options.UseSqlServer(connectionString, b =>
                 {
                     b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName);
                     b.EnableRetryOnFailure();
                 })
-                .AddInterceptors(new AuditableInterceptor()));
+                .AddInterceptors(sp.GetRequiredService<AuditableInterceptor>());
+        });
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
